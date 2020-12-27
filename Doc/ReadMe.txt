@@ -1,5 +1,8 @@
-Ref link: https://howtodoinjava.com/spring-boot2/oauth2-auth-server/
+Ref link: 
+https://howtodoinjava.com/spring-boot2/oauth2-auth-server/
 https://stackoverflow.com/questions/46862840/unable-to-use-resourceserverconfigureradapter-and-websecurityconfigureradapter-i
+customUserDetailsService impl ref link:
+http://progressivecoder.com/implementing-spring-boot-security-using-userdetailsservice/
 -> project name: spring-security-demo
 -> Run as java application from file containing main class: SpringSecurityDemoApplication.java
 -> Steps to get auth code:
@@ -41,6 +44,29 @@ https://stackoverflow.com/questions/46862840/unable-to-use-resourceserverconfigu
 		    "email": "humptydumpty@howtodoinjava.com"
 		}
    
+=== ERROR ============
+ERROR:
+  o.s.s.c.bcrypt.BCryptPasswordEncoder     : Encoded password does not look like BCrypt
+Solution:
+  There is two places where user credential is used.
+  1. when we are retrieving the user data from db and storing it in CustomUser class object. 
+     this operation is happening in CustomUserDetailsService.java class.
+  2. There is another place where we provide CustomUserDetailsService class object and PasswordEncoder object where 
+     Spring boot would be reading user info from CustomUser object.
+     this object is provided to spring boot in WebSecurityConfig.java file.
+     NOTE: When Spring boot read password from CustomUser object. which has been initialized. it assume we have encoded the
+     password first then initialize it. and when spring read the password, first it decode it before using.
+  As i was not encoding the password before storing it in CustomUser object. and Spring was using the passowrd after 
+  decoding, it was causing "Bad Credential" error in UI side and in backend error is "Encoded password does not look like BCrypt"
+  Solution:
+    I have added below code to encode the password before initialize it in CustomUserDetailsService.java:
+    
+    customUser.setPassword(passwordEncoder().encode(username));  and  // username is password string
+    
+    public PasswordEncoder passwordEncoder() {
+      return new BCryptPasswordEncoder();
+    }
+
    
    
    
