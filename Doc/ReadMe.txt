@@ -1,4 +1,5 @@
 Ref link: https://howtodoinjava.com/spring-boot2/oauth2-auth-server/
+https://stackoverflow.com/questions/46862840/unable-to-use-resourceserverconfigureradapter-and-websecurityconfigureradapter-i
 -> project name: spring-security-demo
 -> Run as java application from file containing main class: SpringSecurityDemoApplication.java
 -> Steps to get auth code:
